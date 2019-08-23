@@ -25,6 +25,7 @@ declare global {
 import * as http from "http";
 import { EventEmitter } from "events";
 import { Options as RangeParserOptions, Result as RangeParserResult, Ranges as RangeParserRanges } from "range-parser";
+import { PathLike } from 'fs';
 
 export interface NextFunction {
     // tslint:disable-next-line callable-types (In ts2.1 it thinks the type alias has no call signatures)
@@ -184,6 +185,23 @@ export interface CookieOptions {
 }
 
 export interface ByteRange { start: number; end: number; }
+
+export enum DotFilesOption {
+    ALLOW = 'allow',
+    DENY = 'deny',
+    IGNORE = 'ignore',
+}
+
+export interface FileOptions {
+    maxAge: number | string;
+    root: PathLike | string;
+    lastModified: any;
+    headers: any;
+    dotfiles: DotFilesOption;
+    acceptRanges: boolean;
+    cacheControl: boolean;
+    immutable: boolean;
+}
 
 export interface RequestRanges extends RangeParserRanges { }
 
@@ -598,7 +616,7 @@ export interface Response extends http.ServerResponse, Express.Response {
      * @api public
      */
     sendFile(path: string, fn?: Errback): void;
-    sendFile(path: string, options: any, fn?: Errback): void;
+    sendFile(path: string, options: FileOptions, fn?: Errback): void;
 
     /**
      * @deprecated Use sendFile instead.
